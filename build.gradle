@@ -1,6 +1,19 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.2.RELEASE'
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+    }
+}
+
 plugins {
     id 'java'
 }
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -11,6 +24,16 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springBootVersion = '2.1.2.RELEASE'
+    microsoftGraphApi = '1.7.1'
+    junitVersion = '5.6.0'
+}
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation "org.springframework.boot:spring-boot-starter"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    implementation "com.microsoft.graph:microsoft-graph:$microsoftGraphApi"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 }
