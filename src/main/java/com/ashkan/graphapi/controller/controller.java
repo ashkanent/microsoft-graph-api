@@ -4,8 +4,10 @@ import com.ashkan.graphapi.auth.Authentication;
 import com.ashkan.graphapi.auth.GraphUser;
 import com.ashkan.graphapi.services.Excel;
 import com.ashkan.graphapi.services.OneDrive;
+import com.google.gson.JsonParser;
 import com.microsoft.graph.models.extensions.DriveItem;
 import com.microsoft.graph.models.extensions.User;
+import com.microsoft.graph.models.extensions.WorkbookRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -30,11 +32,14 @@ public class controller {
 //		OneDrive.listAllFiles(accessToken);
 		final String testFileId = "01AXVMZA3U5XQPAI3WABALMGDW2V3HU23Z";
 		final String testSheetId = "{00000000-0001-0000-0000-000000000000}";
-		DriveItem testFile = OneDrive.getFileById(accessToken, testFileId);
+//		DriveItem testFile = OneDrive.getFileById(accessToken, testFileId);
 //		Excel.createNewWorksheetForWorkbook(accessToken, testFile, "Ashkan");
-		Excel.printWorksheetsForWorkbook(accessToken, testFile);
-		String cellValue = Excel.getCellValueForWorkbookByRowAndColumn(accessToken, testFile, testSheetId, 0, 0);
+//		Excel.printWorksheetsForWorkbook(accessToken, testFile);
+		String cellValue = Excel.getCellValueForWorkbookByRowAndColumn(accessToken, testFileId, testSheetId, 0, 0);
 		System.out.println("Cell value is: " + cellValue);
+		WorkbookRange updatedWorkbookRange = new WorkbookRange();
+		updatedWorkbookRange.values = new JsonParser().parse("[[22, 33], [44, 55]]");
+		Excel.setCellValueForWorkbookByRowAndColumn(accessToken, testFileId, testSheetId, "B1:C2", updatedWorkbookRange);
 
 	}
 }

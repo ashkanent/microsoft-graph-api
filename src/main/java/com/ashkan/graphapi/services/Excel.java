@@ -2,6 +2,9 @@ package com.ashkan.graphapi.services;
 
 import com.ashkan.graphapi.auth.GraphUser;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.microsoft.graph.core.ClientException;
 import com.microsoft.graph.models.extensions.DriveItem;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
@@ -48,16 +51,26 @@ public class Excel {
 		return graphClient.me().drive().items(givenFile.id).workbook().worksheets(givenId).buildRequest().get();
 	}
 
-	public static String getCellValueForWorkbookByRowAndColumn(String accessToken, DriveItem givenFile, String sheetId, Integer rowIndex, Integer columnIndex) {
+	public static String getCellValueForWorkbookByRowAndColumn(String accessToken, String fileId, String sheetId, Integer rowIndex, Integer columnIndex) {
 		IGraphServiceClient graphClient = GraphUser.ensureGraphClient(accessToken);
-		createSession(accessToken, givenFile.id);
 		WorkbookRange range = new WorkbookRange();
 
 		try {
-			range = graphClient.me().drive().items(givenFile.id).workbook().worksheets(URLEncoder.encode(sheetId, StandardCharsets.UTF_8.toString())).cell(rowIndex, columnIndex).buildRequest().get();
+			range = graphClient.me().drive().items(fileId).workbook().worksheets(URLEncoder.encode(sheetId, StandardCharsets.UTF_8.toString())).cell(rowIndex, columnIndex).buildRequest().get();
 		} catch (ClientException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return ((JsonArray)((JsonArray)range.values).get(0)).get(0).toString();
+	}
+
+	public static void setCellValueForWorkbookByRowAndColumn(String accessToken, String fileId, String sheetId, String targetRange, WorkbookRange updatedRange) {
+		IGraphServiceClient graphClient = GraphUser.ensureGraphClient(accessToken);
+		WorkbookRange range = new WorkbookRange();
+
+		try {
+			graphClient.me().drive().items(fileId).workbook().worksheets(URLEncoder.encode(sheetId, StandardCharsets.UTF_8.toString())).range(targetRange).buildRequest().patch(updatedRange);
+		} catch (ClientException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }
