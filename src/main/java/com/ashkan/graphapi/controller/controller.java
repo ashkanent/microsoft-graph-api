@@ -29,12 +29,13 @@ public class controller {
 		User user = GraphUser.getUser(accessToken);
 
 		System.out.println("Welcome " + user.displayName);
-//		OneDrive.listAllFiles(accessToken);
+
+		OneDrive.listAllFiles(accessToken);
 		final String testFileId = "01AXVMZA3U5XQPAI3WABALMGDW2V3HU23Z";
 		final String testSheetId = "{00000000-0001-0000-0000-000000000000}";
-//		DriveItem testFile = OneDrive.getFileById(accessToken, testFileId);
-//		Excel.createNewWorksheetForWorkbook(accessToken, testFile, "Ashkan");
-//		Excel.printWorksheetsForWorkbook(accessToken, testFile);
+		DriveItem testFile = OneDrive.getFileById(accessToken, testFileId);
+		Excel.createNewWorksheetForWorkbook(accessToken, testFile, "Ashkan");
+		Excel.printWorksheetsForWorkbook(accessToken, testFile);
 		String cellValue = Excel.getCellValueForWorkbookByRowAndColumn(accessToken, testFileId, testSheetId, 0, 0);
 		System.out.println("Cell value is: " + cellValue);
 		WorkbookRange updatedWorkbookRange = new WorkbookRange();

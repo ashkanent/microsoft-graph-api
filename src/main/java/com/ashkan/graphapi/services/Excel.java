@@ -2,9 +2,6 @@ package com.ashkan.graphapi.services;
 
 import com.ashkan.graphapi.auth.GraphUser;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.microsoft.graph.core.ClientException;
 import com.microsoft.graph.models.extensions.DriveItem;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
@@ -12,7 +9,6 @@ import com.microsoft.graph.models.extensions.WorkbookRange;
 import com.microsoft.graph.models.extensions.WorkbookSessionInfo;
 import com.microsoft.graph.models.extensions.WorkbookWorksheet;
 import com.microsoft.graph.requests.extensions.IWorkbookWorksheetCollectionPage;
-import com.microsoft.graph.requests.extensions.WorkbookWorksheetCollectionPage;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -45,10 +41,17 @@ public class Excel {
 		graphClient.me().drive().items(givenFile.id).workbook().worksheets().buildRequest().post(newWorkbookWorksheet);
 	}
 
-	public static WorkbookWorksheet getWorksheetFromWorkbookById(String accessToken, DriveItem givenFile, String givenId) {
+	public static WorkbookWorksheet getWorksheetFromWorkbookById(String accessToken, DriveItem givenFile, String sheetId) {
 		IGraphServiceClient graphClient = GraphUser.ensureGraphClient(accessToken);
-
-		return graphClient.me().drive().items(givenFile.id).workbook().worksheets(givenId).buildRequest().get();
+		WorkbookWorksheet workbookWorksheet = new WorkbookWorksheet();
+		try {
+			workbookWorksheet =
+					graphClient.me().drive().items(givenFile.id).workbook().worksheets(URLEncoder.encode(sheetId,
+							StandardCharsets.UTF_8.toString())).buildRequest().get();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return workbookWorksheet;
 	}
 
 	public static String getCellValueForWorkbookByRowAndColumn(String accessToken, String fileId, String sheetId, Integer rowIndex, Integer columnIndex) {
