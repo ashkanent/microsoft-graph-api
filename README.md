@@ -1,4 +1,4 @@
-#Microsoft Graph API
+# Microsoft Graph API
 
 In this project I am trying to explore the *Microsoft Graph API* and more specifically its
 endpoints for Excel and OneDrive. In its current form this repo is more like a work in progress
